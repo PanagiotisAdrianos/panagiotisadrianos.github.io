@@ -8,8 +8,8 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<meta name="theme-color" content="#eef2f1" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1513" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1220" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Pocketfold">
@@ -17,21 +17,21 @@
 <style>
 /* Layout: one narrow column, month summary first, then the add form, then the day-by-day list */
 :root{
-  --bg:#eef2f1;--surface:#ffffff;--ink:#13201c;--muted:#5a6964;--line:#d5dedb;
-  --accent:#0d6e5f;--accent-ink:#ffffff;--soft:#e3ece9;--danger:#b3261e;--warn:#a86400;
+  --bg:#eef1f6;--surface:#ffffff;--ink:#111a2e;--muted:#5b6475;--line:#d7dce6;
+  --accent:#1f3a68;--accent-ink:#ffffff;--soft:#e4e9f2;--danger:#b3261e;--warn:#a86400;
   --font:system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0e1513;--surface:#16201d;--ink:#e5eeeb;--muted:#93a49f;--line:#283632;
-    --accent:#3dbfa5;--accent-ink:#04201a;--soft:#1e2b27;--danger:#ff8a80;--warn:#f0b04a;
+    --bg:#0d1220;--surface:#161d2e;--ink:#e6eaf2;--muted:#95a0b5;--line:#273149;
+    --accent:#8fb0ea;--accent-ink:#0b1426;--soft:#1c2539;--danger:#ff8a80;--warn:#f0b04a;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0e1513;--surface:#16201d;--ink:#e5eeeb;--muted:#93a49f;--line:#283632;
-  --accent:#3dbfa5;--accent-ink:#04201a;--soft:#1e2b27;--danger:#ff8a80;--warn:#f0b04a;
+  --bg:#0d1220;--surface:#161d2e;--ink:#e6eaf2;--muted:#95a0b5;--line:#273149;
+  --accent:#8fb0ea;--accent-ink:#0b1426;--soft:#1c2539;--danger:#ff8a80;--warn:#f0b04a;
   color-scheme:dark;
 }
 *{box-sizing:border-box}

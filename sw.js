@@ -1,6 +1,6 @@
 // Κρατάει την εφαρμογή διαθέσιμη χωρίς internet.
 // Όταν αλλάζεις αρχεία της εφαρμογής, άλλαξε το VERSION για να πάρουν όλοι τη νέα έκδοση.
-const VERSION = 'pocketfold-v2';
+const VERSION = 'pocketfold-v3';
 const ASSETS = [
   './',
   './index.html',

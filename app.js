@@ -28,7 +28,7 @@
       csv: 'Λήψη του μήνα ως CSV', csvHead: 'Ημερομηνία;Κατηγορία;Περιγραφή;Ποσό',
       backupTitle: 'Αντίγραφο ασφαλείας', backupSave: 'Αποθήκευση αντιγράφου', restore: 'Επαναφορά από αρχείο',
       lastBackup: function(d){ return 'Τελευταίο αντίγραφο: ' + d + '.'; },
-      backupOld: ' Πάρε καινούριο, έχουν περάσει πάνω από δύο εβδομάδες.',
+      backupOld: ' Πάρε καινούριο, έχει περάσει πάνω από μία εβδομάδα.',
       backupNever: 'Τα έξοδα μένουν μόνο σε αυτό το κινητό. Αν το αλλάξεις ή σβήσεις τα δεδομένα του browser, χάνονται. Αποθήκευε αντίγραφο κάθε λίγες μέρες (π.χ. στο Google Drive).',
       errAmount: 'Γράψε ένα ποσό μεγαλύτερο από το μηδέν, π.χ. 3,50.', errBig: 'Το ποσό είναι πολύ μεγάλο. Έλεγξε τα ψηφία.',
       added: function(a){ return 'Προστέθηκε ' + a; }, saved: 'Οι αλλαγές αποθηκεύτηκαν', deleted: 'Το έξοδο διαγράφηκε',
@@ -37,7 +37,16 @@
       restoredNone: 'Όλα τα έξοδα του αρχείου υπάρχουν ήδη', badFile: 'Αυτό το αρχείο δεν είναι αντίγραφο της εφαρμογής.',
       storageFail: 'Η αποθήκευση απέτυχε: ο χώρος του κινητού μπορεί να είναι γεμάτος.',
       installText: 'Βάλε την εφαρμογή στο κινητό σου για να ανοίγει με ένα πάτημα, και χωρίς internet.', install: 'Εγκατάσταση',
-      iosInstall: 'Για εγκατάσταση: πάτα <b>Κοινοποίηση</b> και μετά <b>Προσθήκη στην οθόνη Αφετηρίας</b>.'
+      iosInstall: 'Για εγκατάσταση: πάτα <b>Κοινοποίηση</b> και μετά <b>Προσθήκη στην οθόνη Αφετηρίας</b>.',
+      repeat: 'Συνδρομή: να μπαίνει μόνο του κάθε μήνα', subTag: 'Συνδρομή',
+      subsTitle: 'Συνδρομές και πάγια', subsHint: 'Μπαίνουν μόνα τους κάθε μήνα, την ίδια μέρα. Δεν χρειάζεται να τα ξαναγράψεις.',
+      subsNone: 'Δεν έχεις συνδρομές ακόμα. Όταν γράφεις ένα έξοδο (π.χ. ενοίκιο, Netflix), τσέκαρε «Συνδρομή» και θα μπαίνει μόνο του κάθε μήνα.',
+      subEvery: function(d){ return 'κάθε μήνα στις ' + d; }, subsTotal: function(m){ return 'Σύνολο κάθε μήνα: ' + m; },
+      stop: 'Διακοπή', stopSure: 'Σίγουρα;',
+      subAdded: function(a){ return 'Προστέθηκε η συνδρομή ' + a + '. Θα μπαίνει κάθε μήνα.'; },
+      subStopped: 'Η συνδρομή σταμάτησε. Όσα έχουν ήδη μπει, μένουν.',
+      autoPosted: function(n){ return n === 1 ? 'Μπήκε αυτόματα 1 συνδρομή' : 'Μπήκαν αυτόματα ' + n + ' συνδρομές'; },
+      cmpSoFar: 'Ίδια μέρα τον προηγούμενο μήνα', cmpPrev: 'Προηγούμενος μήνας', cmpBig: 'Μεγαλύτερη αλλαγή'
     },
     en: {
       locale: 'en-IE', dec: '.',
@@ -59,7 +68,7 @@
       csv: 'Download this month as CSV', csvHead: 'Date;Category;Description;Amount',
       backupTitle: 'Backup', backupSave: 'Save a backup', restore: 'Restore from file',
       lastBackup: function(d){ return 'Last backup: ' + d + '.'; },
-      backupOld: ' Make a new one — it’s been more than two weeks.',
+      backupOld: ' Make a new one — it’s been more than a week.',
       backupNever: 'Your expenses live only on this phone. If you switch phones or clear the browser’s data, they’re gone. Save a backup every few days (e.g. to Google Drive).',
       errAmount: 'Enter an amount greater than zero, e.g. 3.50.', errBig: 'That amount is too large. Check the digits.',
       added: function(a){ return 'Added ' + a; }, saved: 'Changes saved', deleted: 'Expense deleted',
@@ -68,7 +77,16 @@
       restoredNone: 'Every expense in that file is already here', badFile: 'That file isn’t a Pocketfold backup.',
       storageFail: 'Saving failed: your phone’s storage may be full.',
       installText: 'Install the app so it opens with one tap, even offline.', install: 'Install',
-      iosInstall: 'To install: tap <b>Share</b>, then <b>Add to Home Screen</b>.'
+      iosInstall: 'To install: tap <b>Share</b>, then <b>Add to Home Screen</b>.',
+      repeat: 'Subscription: add it automatically every month', subTag: 'Subscription',
+      subsTitle: 'Subscriptions & fixed costs', subsHint: 'Added automatically every month on the same day. No need to enter them again.',
+      subsNone: 'No subscriptions yet. When you add an expense (e.g. rent, Netflix), tick “Subscription” and it will be added every month.',
+      subEvery: function(d){ return 'every month on day ' + d; }, subsTotal: function(m){ return 'Total per month: ' + m; },
+      stop: 'Stop', stopSure: 'Sure?',
+      subAdded: function(a){ return 'Subscription added: ' + a + '. It will repeat every month.'; },
+      subStopped: 'Subscription stopped. Entries already added stay.',
+      autoPosted: function(n){ return n === 1 ? '1 subscription added automatically' : n + ' subscriptions added automatically'; },
+      cmpSoFar: 'Same day last month', cmpPrev: 'Previous month', cmpBig: 'Biggest change'
     }
   };
 
@@ -81,8 +99,9 @@
   function dateOf(s){ var p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2] || 1); }
   function catOf(k){ return CAT_KEYS.indexOf(k) > -1 ? k : 'other'; }
 
-  var LOCAL = {budget: 0, items: [], lang: null};
+  var LOCAL = {budget: 0, items: [], lang: null, subs: []};
   try { var raw = localStorage.getItem(LS); if (raw) { var p0 = JSON.parse(raw); if (p0 && Array.isArray(p0.items)) LOCAL = p0; } } catch (e) {}
+  if (!Array.isArray(LOCAL.subs)) LOCAL.subs = [];
 
   var lang = LOCAL.lang === 'en' || LOCAL.lang === 'el' ? LOCAL.lang : null;
   var T = STR[lang || 'el'];
@@ -102,7 +121,7 @@
   var view = today().slice(0, 7);
   var selCat = 'food';
   var D = {budget: 0, month: [], recent: []};
-  var pendingDel = null, editingBudget = false, editingId = null, flash = '', flashTimer = null;
+  var pendingDel = null, pendingStop = null, editingBudget = false, editingId = null, flash = '', flashTimer = null;
 
   function saveLocal(){
     try { localStorage.setItem(LS, JSON.stringify(LOCAL)); } catch (e) { say(T.storageFail); }
@@ -144,6 +163,7 @@
       '<section class="card" aria-label="' + T.monthSummary + '">' +
         '<div class="mnav"><button class="icon" id="prev" type="button" aria-label="' + T.prevMonth + '">‹</button><h1 id="mlabel"></h1><button class="icon" id="next" type="button" aria-label="' + T.nextMonth + '">›</button></div>' +
         '<div class="total"><span class="lbl">' + T.spent + '</span><span id="total" class="big"></span><span id="count" class="sub"></span></div>' +
+        '<div id="cmp" class="cmp"></div>' +
         '<div id="budget" class="budget"></div>' +
         '<div id="stack" class="stack" aria-hidden="true"></div>' +
         '<ul id="cats" class="cats"></ul>' +
@@ -158,11 +178,13 @@
           '</div>' +
           '<div class="row2"><div><label for="note">' + T.note + '</label><input id="note" placeholder="' + T.notePh + '" maxlength="80" autocomplete="off"></div>' +
           '<div><label for="date">' + T.date + '</label><input id="date" type="date"></div></div>' +
+          '<label class="repeat" id="repeatRow"><input type="checkbox" id="repeat"> <span>' + T.repeat + '</span></label>' +
           '<p id="err" class="err" role="alert"></p>' +
           '<div class="formfoot"><button class="primary" id="submit" type="submit"></button><button type="button" class="link" id="cancelEdit" data-act="cancelEdit" hidden>' + T.cancel + '</button></div>' +
         '</form>' +
       '</section>' +
       '<section id="list" aria-label="' + T.listAria + '"></section>' +
+      '<section class="card" aria-labelledby="subt"><h2 id="subt">' + T.subsTitle + '</h2><div id="subs"></div></section>' +
       '<section class="card" aria-labelledby="bkt"><h2 id="bkt">' + T.backupTitle + '</h2><p class="hint" id="bkinfo"></p>' +
         '<div class="bkbtns"><button type="button" class="small" data-act="export">' + T.backupSave + '</button>' +
         '<input type="file" id="importFile" accept="application/json,.json" class="sr"><label class="ghost" for="importFile">' + T.restore + '</label></div></section>';
@@ -215,6 +237,9 @@
     $('total').textContent = money(total);
     $('count').textContent = items.length ? T.count(items.length) : T.noneMonth;
 
+    // compared with the month before (for the current month: up to the same day)
+    $('cmp').innerHTML = compareHtml(items, total, cur);
+
     // budget
     var b = D.budget || 0, bh;
     if (editingBudget) {
@@ -262,7 +287,7 @@
           arr.map(function(i){
             var k = catOf(i.cat), sure = pendingDel === i.id;
             return '<div class="item' + (editingId === i.id ? ' editing' : '') + '"><i class="dot" style="background:' + CAT_COLORS[k] + '"></i>' +
-              '<button type="button" class="t" data-act="edit" data-id="' + esc(i.id) + '" aria-label="' + T.edit + ': ' + T.cats[k] + ' ' + money(i.amt) + '"><span>' + T.cats[k] + '</span>' + (i.note ? '<small>' + esc(i.note) + '</small>' : '') + '</button>' +
+              '<button type="button" class="t" data-act="edit" data-id="' + esc(i.id) + '" aria-label="' + T.edit + ': ' + T.cats[k] + ' ' + money(i.amt) + '"><span>' + T.cats[k] + (i.sub ? ' <em class="tag">↻ ' + T.subTag + '</em>' : '') + '</span>' + (i.note ? '<small>' + esc(i.note) + '</small>' : '') + '</button>' +
               '<span class="amount">' + money(i.amt) + '</span>' +
               '<button type="button" class="del' + (sure ? ' sure' : '') + '" data-act="del" data-id="' + esc(i.id) + '" aria-label="' + (sure ? T.confirmDel : T.del) + ' ' + T.cats[k] + ' ' + money(i.amt) + '">' + (sure ? T.sure : T.del) + '</button></div>';
           }).join('') + '</div>';
@@ -275,15 +300,71 @@
     Array.prototype.forEach.call($('chips').children, function(btn){
       btn.setAttribute('aria-checked', btn.getAttribute('data-cat') === selCat ? 'true' : 'false');
     });
+    $('repeatRow').hidden = !!editingId;
+    renderSubs();
     renderBackup();
     showStatus();
+  }
+
+  function prevYm(ym){ var d = dateOf(ym); d.setMonth(d.getMonth() - 1); return d.getFullYear() + '-' + pad(d.getMonth() + 1); }
+  function compareHtml(items, total, cur){
+    var pm = prevYm(view), soFar = view === cur, dayNow = Number(today().slice(8, 10));
+    var prev = LOCAL.items.filter(function(i){ return i.ym === pm && (!soFar || Number(i.date.slice(8, 10)) <= dayNow); });
+    if (!prev.length || !items.length) return '';
+    var ptot = prev.reduce(function(s, i){ return s + i.amt; }, 0), diff = total - ptot;
+    var a = {}, z = {};
+    items.forEach(function(i){ a[catOf(i.cat)] = (a[catOf(i.cat)] || 0) + i.amt; });
+    prev.forEach(function(i){ z[catOf(i.cat)] = (z[catOf(i.cat)] || 0) + i.amt; });
+    var big = null, bigD = 0;
+    CAT_KEYS.forEach(function(k){ var d = (a[k] || 0) - (z[k] || 0); if (Math.abs(d) > Math.abs(bigD)) { bigD = d; big = k; } });
+    function signed(c){ return (c > 0 ? '+' : c < 0 ? '−' : '') + money(Math.abs(c)); }
+    return '<div class="bline"><span>' + (soFar ? T.cmpSoFar : T.cmpPrev) + ' <strong>' + money(ptot) + '</strong></span>' +
+      '<span class="' + (diff > 0 ? 'neg' : 'pos') + '"><strong>' + signed(diff) + '</strong></span></div>' +
+      (big && bigD ? '<div class="bline"><span>' + T.cmpBig + ': ' + T.cats[big] + '</span><span class="' + (bigD > 0 ? 'neg' : 'pos') + '"><strong>' + signed(bigD) + '</strong></span></div>' : '');
+  }
+
+  function renderSubs(){
+    var el = $('subs');
+    if (!el) return;
+    if (!LOCAL.subs.length) { el.innerHTML = '<p class="hint">' + T.subsNone + '</p>'; return; }
+    var tot = LOCAL.subs.reduce(function(s, x){ return s + x.amt; }, 0);
+    el.innerHTML = '<p class="hint">' + T.subsHint + '</p><div class="rows">' + LOCAL.subs.map(function(x){
+      var k = catOf(x.cat), sure = pendingStop === x.id;
+      return '<div class="item"><i class="dot" style="background:' + CAT_COLORS[k] + '"></i>' +
+        '<div class="t"><span>' + esc(x.note || T.cats[k]) + '</span><small>' + T.subEvery(x.day) + '</small></div>' +
+        '<span class="amount">' + money(x.amt) + '</span>' +
+        '<button type="button" class="del' + (sure ? ' sure' : '') + '" data-act="stop" data-id="' + esc(x.id) + '">' + (sure ? T.stopSure : T.stop) + '</button></div>';
+    }).join('') + '</div><p class="sub subtot">' + T.subsTotal(money(tot)) + '</p>';
+  }
+
+  // Adds every month that is due for each subscription, once. Each entry has a fixed id
+  // (subscription + month), so it can never be added twice, even after a restore.
+  function daysIn(ym){ var p = ym.split('-').map(Number); return new Date(p[0], p[1], 0).getDate(); }
+  function nextYm(ym){ var d = dateOf(ym); d.setMonth(d.getMonth() + 1); return d.getFullYear() + '-' + pad(d.getMonth() + 1); }
+  function postSubs(){
+    var td = today(), cur = td.slice(0, 7), n = 0, have = {};
+    LOCAL.items.forEach(function(i){ have[i.id] = 1; });
+    LOCAL.subs.forEach(function(x){
+      for (var guard = 0; guard < 60; guard++) {
+        var m = nextYm(x.last), day = Math.min(x.day, daysIn(m)), d = m + '-' + pad(day);
+        if (m > cur || d > td) break;
+        var id = 'r' + x.id + '-' + m;
+        if (!have[id]) {
+          LOCAL.items.push({id: id, amt: x.amt, cat: catOf(x.cat), note: x.note, date: d, ym: m, created: Date.now(), sub: x.id});
+          have[id] = 1; n++;
+        }
+        x.last = m;
+      }
+    });
+    if (n) { saveLocal(); say(T.autoPosted(n)); }
+    return n;
   }
 
   function renderBackup(){
     var el = $('bkinfo');
     if (!el) return;
     var n = LOCAL.items.length, lb = LOCAL.lastBackup;
-    var old = !lb || (Date.now() - lb) > 14 * 864e5;
+    var old = !lb || (Date.now() - lb) > 7 * 864e5;
     el.textContent = lb ? T.lastBackup(new Intl.DateTimeFormat(T.locale, {day: 'numeric', month: 'numeric', year: 'numeric'}).format(new Date(lb))) + (old && n ? T.backupOld : '') : T.backupNever;
     el.classList.toggle('nudge', !!(old && n));
   }
@@ -305,7 +386,7 @@
   }
   function resetForm(){
     editingId = null;
-    $('amt').value = ''; $('note').value = ''; $('date').value = today(); $('err').textContent = '';
+    $('amt').value = ''; $('note').value = ''; $('date').value = today(); $('err').textContent = ''; $('repeat').checked = false;
   }
 
   function onSubmit(){
@@ -317,10 +398,21 @@
     if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) d = today();
     var id = editingId, old = id ? findItem(id) : null;
     var data = {amt: amt, cat: selCat, note: $('note').value.trim().slice(0, 80), date: d, ym: d.slice(0, 7), created: old ? old.created : Date.now()};
+    if (old && old.sub) data.sub = old.sub;
     if (old) LOCAL.items = LOCAL.items.map(function(i){ return i.id === id ? Object.assign({id: id}, data) : i; });
-    else LOCAL.items.push(Object.assign({id: 'l' + Date.now()}, data));
+    var asSub = !old && $('repeat').checked;
+    if (!old) {
+      var nid = 'l' + Date.now();
+      if (asSub) {
+        var sid = 's' + Date.now();
+        LOCAL.subs.push({id: sid, amt: amt, cat: selCat, note: data.note, day: Number(d.slice(8, 10)), last: data.ym, created: Date.now()});
+        nid = 'r' + sid + '-' + data.ym; data.sub = sid;
+      }
+      LOCAL.items.push(Object.assign({id: nid}, data));
+    }
     saveLocal();
-    say(id ? T.saved : T.added(money(amt)));
+    if (asSub) postSubs();
+    say(id ? T.saved : asSub ? T.subAdded(money(amt)) : T.added(money(amt)));
     resetForm();
     view = data.ym;
     refresh();
@@ -350,6 +442,13 @@
         LOCAL.items = LOCAL.items.filter(function(i){ return i.id !== id; });
         saveLocal(); say(T.deleted); refresh();
       } else { pendingDel = id; render(); }
+    } else if (act === 'stop') {
+      var sid2 = t.getAttribute('data-id');
+      if (pendingStop === sid2) {
+        pendingStop = null;
+        LOCAL.subs = LOCAL.subs.filter(function(x){ return x.id !== sid2; });
+        saveLocal(); say(T.subStopped); refresh();
+      } else { pendingStop = sid2; render(); }
     } else if (act === 'edit') {
       var it = findItem(t.getAttribute('data-id'));
       if (!it) return;
@@ -407,7 +506,7 @@
   }
 
   function exportBackup(){
-    var data = {app: 'pocketfold', version: 1, exported: new Date().toISOString(), budget: LOCAL.budget || 0, items: LOCAL.items};
+    var data = {app: 'pocketfold', version: 1, exported: new Date().toISOString(), budget: LOCAL.budget || 0, items: LOCAL.items, subs: LOCAL.subs};
     downloadFile('pocketfold-backup-' + today() + '.json', JSON.stringify(data), 'application/json').then(function(done){
       if (!done) return;
       LOCAL.lastBackup = Date.now(); saveLocal(); renderBackup();
@@ -424,11 +523,19 @@
       var added = 0;
       p.items.forEach(function(i){
         if (!i || have[i.id] || typeof i.amt !== 'number' || i.amt <= 0 || !/^\d{4}-\d{2}-\d{2}$/.test(i.date || '')) return;
-        LOCAL.items.push({id: String(i.id), amt: Math.round(i.amt), cat: catOf(i.cat), note: String(i.note || '').slice(0, 80), date: i.date, ym: i.date.slice(0, 7), created: Number(i.created) || 0});
+        var ni = {id: String(i.id), amt: Math.round(i.amt), cat: catOf(i.cat), note: String(i.note || '').slice(0, 80), date: i.date, ym: i.date.slice(0, 7), created: Number(i.created) || 0};
+        if (i.sub) ni.sub = String(i.sub);
+        LOCAL.items.push(ni);
         have[i.id] = 1; added++;
       });
       if (!LOCAL.budget && p.budget > 0) LOCAL.budget = Math.round(p.budget);
-      saveLocal(); refresh();
+      (Array.isArray(p.subs) ? p.subs : []).forEach(function(x){
+        if (!x || !x.id || typeof x.amt !== 'number' || x.amt <= 0 || !/^\d{4}-\d{2}$/.test(x.last || '')) return;
+        var mine = LOCAL.subs.filter(function(y){ return y.id === String(x.id); })[0];
+        if (mine) { if (x.last > mine.last) mine.last = x.last; return; }
+        LOCAL.subs.push({id: String(x.id), amt: Math.round(x.amt), cat: catOf(x.cat), note: String(x.note || '').slice(0, 80), day: Math.min(31, Math.max(1, Number(x.day) || 1)), last: x.last, created: Number(x.created) || 0});
+      });
+      saveLocal(); added += postSubs(); refresh();
       say(added ? T.restored(added) : T.restoredNone);
     }).catch(function(){ say(T.badFile); });
   }
@@ -466,8 +573,11 @@
   });
 
   // ---------- start ----------
-  if (lang) { setLang(lang); buildShell(); refresh(); }
+  if (lang) { setLang(lang); buildShell(); postSubs(); refresh(); }
   else showLangPicker();
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'visible' && lang && $('mlabel') && postSubs()) refresh();
+  });
   if (navigator.storage && navigator.storage.persist) { navigator.storage.persist().catch(function(){}); }
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     window.addEventListener('load', function(){ navigator.serviceWorker.register('./sw.js').catch(function(){}); });

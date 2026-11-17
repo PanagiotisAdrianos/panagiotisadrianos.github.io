@@ -226,7 +226,7 @@ function setHtml(ex,s){
 /* ---------- state and storage (this device only) ---------- */
 var LS_KEY = 'gymlog:v1';
 var state = {
-  logs:{}, custom:[], programDone:{}, lastBackup:0, view:'program', from:'program', group:'all', query:'',
+  logs:{}, custom:[], programDone:{}, lastBackup:0, restDur:90, view:'program', from:'program', group:'all', query:'',
   currentEx:null, currentDay:null, ready:false, flash:null,
   pastLimit:8, histLimit:30, scrollY:0
 };
@@ -250,7 +250,7 @@ function topSet(ex,session){
 }
 
 function persist(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify({logs:state.logs, custom:state.custom, programDone:state.programDone, lastBackup:state.lastBackup})); }
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({logs:state.logs, custom:state.custom, programDone:state.programDone, lastBackup:state.lastBackup, restDur:state.restDur})); }
   catch(e){
     if(!store.warnedLS){ store.warnedLS=true; toast('Η αποθήκευση απέτυχε. Ο χώρος της συσκευής μπορεί να είναι γεμάτος.'); }
   }
@@ -263,13 +263,15 @@ function persistProgramDone(){ return persist(); }
 function loadLocal(){
   try{
     var raw = localStorage.getItem(LS_KEY);
-    if(raw){ var o=JSON.parse(raw); state.logs=o.logs||{}; state.custom=o.custom||[]; state.programDone=o.programDone||{}; state.lastBackup=o.lastBackup||0; }
+    if(raw){ var o=JSON.parse(raw); state.logs=o.logs||{}; state.custom=o.custom||[]; state.programDone=o.programDone||{}; state.lastBackup=o.lastBackup||0; state.restDur=o.restDur||90; }
   }catch(e){}
   state.ready=true;
 }
 function boot(){
   loadLocal();
   renderProgram();
+  if(rest.end && rest.end<=Date.now()) rest.done=true;
+  renderRest();
   if(navigator.storage && navigator.storage.persist){ navigator.storage.persist().catch(function(){}); }
   if('serviceWorker' in navigator && location.protocol==='https:'){
     window.addEventListener('load', function(){ navigator.serviceWorker.register('./sw.js').catch(function(){}); });
@@ -424,9 +426,9 @@ function dayHtml(day){
     }).join('')+'</div></section>';
 }
 function backupHtml(hasData){
-  var lb=state.lastBackup, old=!lb || (Date.now()-lb) > 14*864e5;
+  var lb=state.lastBackup, old=!lb || (Date.now()-lb) > 7*864e5;
   var info = lb
-    ? 'Τελευταίο αντίγραφο: '+new Date(lb).toLocaleDateString('el-GR')+'.'+(old && hasData ? ' Πάρε καινούριο, έχουν περάσει πάνω από δύο εβδομάδες.' : '')
+    ? 'Τελευταίο αντίγραφο: '+new Date(lb).toLocaleDateString('el-GR')+'.'+(old && hasData ? ' Πάρε καινούριο, έχει περάσει πάνω από μία εβδομάδα.' : '')
     : 'Οι προπονήσεις σου μένουν μόνο σε αυτό το κινητό. Αποθήκευε αντίγραφο κάθε λίγες μέρες, π.χ. στα Αρχεία ή στο iCloud Drive.';
   return '<section class="backup" aria-labelledby="bk-h"><h2 id="bk-h">Αντίγραφο ασφαλείας</h2>'+
     '<p'+(old && hasData ? ' class="nudge"' : '')+'>'+esc(info)+'</p>'+
@@ -700,9 +702,73 @@ function onAddSet(){
     rI.focus(); return;
   }
   err.textContent='';
+  var before=sessionsOf(ex.id), prior=before.length ? statsOf(ex,before).best : null;
   addSet(ex.id,kg,r);
   renderExerciseData();
+  var after=sessionsOf(ex.id), anyW=after.some(function(s){ return s.sets.some(function(x){ return x.kg>0; }); });
+  if(prior && setKey(ex,{kg:kg,r:r},anyW) > setKey(ex,prior,anyW)) toast('Νέο ρεκόρ! '+setPlain(ex,{kg:kg,r:r})+' (πριν: '+setPlain(ex,prior)+')');
+  startRest();
 }
+
+/* ---------- rest timer ----------
+   Counts from the moment the set was logged, so it is right even after the phone was locked.
+   iPhone web apps cannot ring while the screen is off; with the app open it beeps (and vibrates on Android). */
+var REST_KEY='gymlog:rest', rest={end:0, done:false}, restTick=null, audioCtx=null;
+try{ var rs=JSON.parse(localStorage.getItem(REST_KEY)||'null'); if(rs && rs.end) rest.end=rs.end; }catch(e){}
+function unlockAudio(){
+  try{
+    if(!audioCtx){ var AC=window.AudioContext||window.webkitAudioContext; if(AC) audioCtx=new AC(); }
+    if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
+  }catch(e){}
+}
+function beep(){
+  try{
+    if(!audioCtx) return;
+    [0,0.25,0.5].forEach(function(t){
+      var o=audioCtx.createOscillator(), g=audioCtx.createGain(), at=audioCtx.currentTime+t;
+      o.frequency.value=880; g.gain.setValueAtTime(0.0001,at); g.gain.exponentialRampToValueAtTime(0.3,at+0.02); g.gain.exponentialRampToValueAtTime(0.0001,at+0.18);
+      o.connect(g); g.connect(audioCtx.destination); o.start(at); o.stop(at+0.2);
+    });
+  }catch(e){}
+  try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(e){}
+}
+function saveRest(){ try{ localStorage.setItem(REST_KEY, JSON.stringify({end:rest.end})); }catch(e){} }
+function startRest(){
+  unlockAudio();
+  rest.end=Date.now()+state.restDur*1000; rest.done=false; saveRest();
+  renderRest();
+}
+function stopRest(){ rest.end=0; rest.done=false; saveRest(); renderRest(); }
+function adjustRest(sec){
+  state.restDur=Math.max(15,Math.min(600,state.restDur+sec)); persist();
+  if(rest.end && !rest.done) rest.end=Math.max(Date.now()+1000, rest.end+sec*1000);
+  saveRest(); renderRest();
+}
+function mmss(sec){ sec=Math.max(0,Math.ceil(sec)); return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
+function renderRest(){
+  var bar=$('#rest');
+  clearInterval(restTick); restTick=null;
+  if(!rest.end){ bar.hidden=true; document.body.classList.remove('resting'); return; }
+  var left=(rest.end-Date.now())/1000;
+  if(left<=-120){ stopRest(); return; }
+  bar.hidden=false; document.body.classList.add('resting');
+  if(left>0){
+    bar.classList.remove('rest-done');
+    $('#restLbl').textContent='Ανάπαυση';
+    $('#restTime').textContent=mmss(left);
+    var pct=Math.max(0,Math.min(100,100*left/state.restDur));
+    $('#restFill').style.width=pct+'%';
+  } else {
+    if(!rest.done){ rest.done=true; beep(); }
+    bar.classList.add('rest-done');
+    $('#restLbl').textContent='Ώρα για το επόμενο σετ';
+    $('#restTime').textContent='0:00';
+    $('#restFill').style.width='0%';
+  }
+  $('#restDur').textContent='Διάρκεια: '+mmss(state.restDur);
+  restTick=setTimeout(renderRest, 250);
+}
+document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='visible'){ if(rest.end && rest.end<=Date.now()) rest.done=true; renderRest(); } });
 
 function statsOf(ex,sessions){
   var best=null, bk=-1, e1=0, sets=0;
@@ -843,6 +909,11 @@ $('#dlgName').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.pr
 dlg.addEventListener('click', function(e){ if(e.target===dlg) closeDialog(); });
 
 /* ---------- events ---------- */
+$('#rest').addEventListener('click', function(e){
+  var t=e.target.closest('[data-rest]'); if(!t) return;
+  var a=t.dataset.rest;
+  if(a==='stop') stopRest(); else adjustRest(Number(a));
+});
 screen.addEventListener('click', function(e){
   var t=e.target.closest('[data-act]'); if(!t) return;
   var id, d;

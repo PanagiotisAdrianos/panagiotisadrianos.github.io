@@ -1,6 +1,6 @@
 // Κρατάει την εφαρμογή διαθέσιμη χωρίς internet.
 // Όταν αλλάζεις αρχεία της εφαρμογής, άλλαξε το VERSION για να πάρουν όλοι τη νέα έκδοση.
-const VERSION = 'gym-v3';
+const VERSION = 'gym-v4';
 const ASSETS = [
   './',
   './index.html',

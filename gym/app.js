@@ -226,7 +226,7 @@ function setHtml(ex,s){
 /* ---------- state and storage (this device only) ---------- */
 var LS_KEY = 'gymlog:v1';
 var state = {
-  logs:{}, custom:[], programDone:{}, lastBackup:0, restDur:90, view:'program', from:'program', group:'all', query:'',
+  logs:{}, custom:[], programDone:{}, lastBackup:0, restDur:90, useShortcut:false, view:'program', from:'program', group:'all', query:'',
   currentEx:null, currentDay:null, ready:false, flash:null,
   pastLimit:8, histLimit:30, scrollY:0
 };
@@ -250,7 +250,7 @@ function topSet(ex,session){
 }
 
 function persist(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify({logs:state.logs, custom:state.custom, programDone:state.programDone, lastBackup:state.lastBackup, restDur:state.restDur})); }
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({logs:state.logs, custom:state.custom, programDone:state.programDone, lastBackup:state.lastBackup, restDur:state.restDur, useShortcut:state.useShortcut})); }
   catch(e){
     if(!store.warnedLS){ store.warnedLS=true; toast('Η αποθήκευση απέτυχε. Ο χώρος της συσκευής μπορεί να είναι γεμάτος.'); }
   }
@@ -263,7 +263,7 @@ function persistProgramDone(){ return persist(); }
 function loadLocal(){
   try{
     var raw = localStorage.getItem(LS_KEY);
-    if(raw){ var o=JSON.parse(raw); state.logs=o.logs||{}; state.custom=o.custom||[]; state.programDone=o.programDone||{}; state.lastBackup=o.lastBackup||0; state.restDur=o.restDur||90; }
+    if(raw){ var o=JSON.parse(raw); state.logs=o.logs||{}; state.custom=o.custom||[]; state.programDone=o.programDone||{}; state.lastBackup=o.lastBackup||0; state.restDur=o.restDur||90; state.useShortcut=!!o.useShortcut; }
   }catch(e){}
   state.ready=true;
 }
@@ -669,6 +669,7 @@ function openExercise(id){
       (ex.b ? '<p class="hint">Το 0 σημαίνει μόνο το σωματικό βάρος.</p>' : '')+
       '<div class="restset"><div class="rs-txt"><span>Ανάπαυση ανάμεσα στα σετ</span><small>Ξεκινά μόλις πατήσεις «Καταγραφή σετ»</small></div>'+
         '<div class="rs-ctl"><button data-act="rest-adj" data-d="-15" aria-label="15 δευτερόλεπτα λιγότερη ανάπαυση">−15</button><b id="restSetVal">'+mmss(state.restDur)+'</b><button data-act="rest-adj" data-d="15" aria-label="15 δευτερόλεπτα περισσότερη ανάπαυση">+15</button></div></div>'+
+      shortcutHtml()+
       '<button class="primary" id="addSet" data-act="add-set">Καταγραφή σετ</button>'+
       '<p class="err" id="err" role="alert"></p>'+
     '</section>'+
@@ -710,6 +711,25 @@ function onAddSet(){
   var after=sessionsOf(ex.id), anyW=after.some(function(s){ return s.sets.some(function(x){ return x.kg>0; }); });
   if(prior && setKey(ex,{kg:kg,r:r},anyW) > setKey(ex,prior,anyW)) toast('Νέο ρεκόρ! '+setPlain(ex,{kg:kg,r:r})+' (πριν: '+setPlain(ex,prior)+')');
   startRest();
+  if(state.useShortcut) setTimeout(runShortcut, 350);
+}
+
+/* ---------- iPhone alarm through a Shortcut ----------
+   A web app cannot ring while the iPhone is locked, so after each set it can open the
+   user's Shortcut «Ανάπαυση», which starts the Clock timer for the rest time in seconds. */
+var SHORTCUT_NAME='Ανάπαυση';
+function shortcutUrl(sec){ return 'shortcuts://run-shortcut?name='+encodeURIComponent(SHORTCUT_NAME)+'&input=text&text='+sec; }
+function runShortcut(){ window.location.href=shortcutUrl(state.restDur); }
+function shortcutHtml(){
+  return '<details class="sc"><summary>Ειδοποίηση με κλειδωμένο κινητό'+(state.useShortcut ? ' <span class="sc-on">Ενεργή</span>' : '')+'</summary>'+
+    '<label class="sc-toggle"><input type="checkbox" id="scToggle"'+(state.useShortcut ? ' checked' : '')+'> <span>Μετά από κάθε σετ, ξεκίνα τον Χρονομετρητή του iPhone</span></label>'+
+    '<p>Χρειάζεται μία φορά μια Συντόμευση με όνομα <b>'+SHORTCUT_NAME+'</b>:</p>'+
+    '<ol><li>Άνοιξε την εφαρμογή <b>Συντομεύσεις</b> και πάτα <b>+</b>.</li>'+
+      '<li>Πάτα <b>Προσθήκη ενέργειας</b>, γράψε «χρονομετρητή» και διάλεξε <b>Έναρξη χρονομετρητή</b>.</li>'+
+      '<li>Πάτα το «30» και διάλεξε <b>Είσοδος συντόμευσης</b>. Πάτα τα «λεπτά» και άλλαξέ τα σε <b>δευτερόλεπτα</b>.</li>'+
+      '<li>Πάνω, πάτα το όνομα και γράψε <b>'+SHORTCUT_NAME+'</b>. Μετά <b>Τέλος</b>.</li></ol>'+
+    '<p>Μετά πάτα «Δοκιμή». Την πρώτη φορά το iPhone ρωτάει αν επιτρέπεις το άνοιγμα των Συντομεύσεων: πάτα <b>Άνοιγμα</b>. Για να γυρίσεις στην εφαρμογή, σύρε από κάτω προς τα πάνω.</p>'+
+    '<button class="secondary" data-act="sc-test">Δοκιμή ('+mmss(state.restDur)+')</button></details>';
 }
 
 /* ---------- rest timer ----------
@@ -746,6 +766,7 @@ function adjustRest(sec){
   if(rest.end && !rest.done) rest.end=Math.max(Date.now()+1000, rest.end+sec*1000);
   saveRest(); renderRest();
   var rv=$('#restSetVal'); if(rv) rv.textContent=mmss(state.restDur);
+  var tb=document.querySelector('[data-act="sc-test"]'); if(tb) tb.textContent='Δοκιμή ('+mmss(state.restDur)+')';
 }
 function mmss(sec){ sec=Math.max(0,Math.ceil(sec)); return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
 function renderRest(){
@@ -927,6 +948,7 @@ screen.addEventListener('click', function(e){
     case 'bump': bump(t.dataset.f, Number(t.dataset.d)); break;
     case 'add-set': onAddSet(); break;
     case 'rest-adj': adjustRest(Number(t.dataset.d)); break;
+    case 'sc-test': runShortcut(); break;
     case 'del-set':
       id=state.currentEx; d=t.dataset.d; var i=Number(t.dataset.i);
       undoable(id,'Το σετ διαγράφηκε.',function(){
@@ -954,6 +976,12 @@ screen.addEventListener('click', function(e){
   }
 });
 screen.addEventListener('change', function(e){
+  if(e.target.id==='scToggle'){
+    state.useShortcut=e.target.checked; persist();
+    var on=document.querySelector('.sc summary'); if(on) on.innerHTML='Ειδοποίηση με κλειδωμένο κινητό'+(state.useShortcut ? ' <span class="sc-on">Ενεργή</span>' : '');
+    toast(state.useShortcut ? 'Μετά από κάθε σετ θα ξεκινά ο Χρονομετρητής του iPhone.' : 'Η ειδοποίηση με το Ρολόι απενεργοποιήθηκε.');
+    return;
+  }
   if(e.target.id!=='importFile') return;
   var f=e.target.files && e.target.files[0];
   e.target.value='';

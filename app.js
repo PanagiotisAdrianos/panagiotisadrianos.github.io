@@ -12,6 +12,7 @@
       locale: 'el-GR', dec: ',',
       cats: {food:'Φαγητό', coffee:'Καφές', super:'Σούπερ μάρκετ', transport:'Μετακίνηση', bills:'Λογαριασμοί', fun:'Διασκέδαση', shop:'Ψώνια', other:'Άλλο'},
       langBtn: 'EN', langBtnLabel: 'Switch to English',
+      periodsAria: 'Τα έξοδά σου τώρα', pToday: 'Σήμερα', pWeek: 'Αυτή την εβδομάδα', pMonth: 'Αυτόν τον μήνα',
       monthSummary: 'Σύνοψη μήνα', prevMonth: 'Προηγούμενος μήνας', nextMonth: 'Επόμενος μήνας',
       spent: 'Ξόδεψες', loading: 'Φόρτωση…', count: function(n){ return n === 1 ? '1 έξοδο' : n + ' έξοδα'; }, noneMonth: 'Κανένα έξοδο αυτόν τον μήνα',
       budgetLabel: 'Μηνιαίος προϋπολογισμός σε ευρώ', budgetPh: 'π.χ. 400', save: 'Αποθήκευση', cancel: 'Άκυρο',
@@ -42,6 +43,7 @@
       locale: 'en-IE', dec: '.',
       cats: {food:'Food', coffee:'Coffee', super:'Groceries', transport:'Transport', bills:'Bills', fun:'Going out', shop:'Shopping', other:'Other'},
       langBtn: 'ΕΛ', langBtnLabel: 'Αλλαγή σε Ελληνικά',
+      periodsAria: 'Your spending right now', pToday: 'Today', pWeek: 'This week', pMonth: 'This month',
       monthSummary: 'Month summary', prevMonth: 'Previous month', nextMonth: 'Next month',
       spent: 'You spent', loading: 'Loading…', count: function(n){ return n === 1 ? '1 expense' : n + ' expenses'; }, noneMonth: 'No expenses this month',
       budgetLabel: 'Monthly budget in euros', budgetPh: 'e.g. 400', save: 'Save', cancel: 'Cancel',
@@ -134,6 +136,11 @@
       '<div class="installbar" id="installbar" hidden></div>' +
       '<header class="top"><div class="brand">Pocketfold</div><div class="topright"><div class="status" id="status" role="status"></div>' +
         '<button type="button" class="langsw" data-act="lang" aria-label="' + T.langBtnLabel + '">' + T.langBtn + '</button></div></header>' +
+      '<section class="periods" aria-label="' + T.periodsAria + '">' +
+        '<div class="ptile"><span>' + T.pToday + '</span><b id="p-day"></b></div>' +
+        '<div class="ptile"><span>' + T.pWeek + '</span><b id="p-week"></b></div>' +
+        '<div class="ptile"><span>' + T.pMonth + '</span><b id="p-month"></b></div>' +
+      '</section>' +
       '<section class="card" aria-label="' + T.monthSummary + '">' +
         '<div class="mnav"><button class="icon" id="prev" type="button" aria-label="' + T.prevMonth + '">‹</button><h1 id="mlabel"></h1><button class="icon" id="next" type="button" aria-label="' + T.nextMonth + '">›</button></div>' +
         '<div class="total"><span class="lbl">' + T.spent + '</span><span id="total" class="big"></span><span id="count" class="sub"></span></div>' +
@@ -187,6 +194,19 @@
   function render(){
     if (!lang || !$('mlabel')) return;
     var cur = today().slice(0, 7);
+
+    // today / this week (from Monday) / this month, always counted from today
+    var td = today(), ws = new Date(); ws.setDate(ws.getDate() - (ws.getDay() + 6) % 7);
+    var wk = ymd(ws), sDay = 0, sWeek = 0, sMonth = 0;
+    LOCAL.items.forEach(function(i){
+      if (i.date > td) return;
+      if (i.date === td) sDay += i.amt;
+      if (i.date >= wk) sWeek += i.amt;
+      if (i.ym === cur) sMonth += i.amt;
+    });
+    $('p-day').textContent = money(sDay);
+    $('p-week').textContent = money(sWeek);
+    $('p-month').textContent = money(sMonth);
     $('mlabel').textContent = monthName(view);
     $('next').disabled = view >= cur;
 

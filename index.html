@@ -145,6 +145,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .lp-btns button{width:100%}
 .ghostbtn{padding:13px 16px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
 .lp-note{font-size:.8rem;margin-top:14px!important}
+/* Γρήγορα πατήματα σε κουμπιά δεν κάνουν ζουμ στο iPhone */
+html,button,a,label,input,select{touch-action:manipulation}
 </style>
 </head>
 <body>

@@ -1,6 +1,6 @@
 // Κρατάει την εφαρμογή διαθέσιμη χωρίς internet.
 // Όταν αλλάζεις αρχεία της εφαρμογής, άλλαξε το VERSION για να πάρουν όλοι τη νέα έκδοση.
-const VERSION = 'gym-v2';
+const VERSION = 'gym-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -13,7 +13,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(ASSETS.map((u) => new Request(u, {cache: 'reload'})))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
@@ -32,7 +32,8 @@ self.addEventListener('fetch', (event) => {
     caches.open(VERSION).then(async (cache) => {
       const cached = await cache.match(req, {ignoreSearch: true}) ||
         (req.mode === 'navigate' ? await cache.match('./index.html') : undefined);
-      const network = fetch(req).then((res) => {
+      // cache: 'no-cache' ώστε οι αλλαγές να φαίνονται με το επόμενο άνοιγμα.
+      const network = fetch(req.url, {cache: 'no-cache', credentials: 'same-origin'}).then((res) => {
         if (res && res.ok) cache.put(req, res.clone());
         return res;
       }).catch(() => cached);

@@ -667,6 +667,8 @@ function openExercise(id){
           '<div class="pm"><button data-act="bump" data-f="reps" data-d="-1" aria-label="Μείωση κατά '+rStep+'">'+ICON_MINUS+'</button><button data-act="bump" data-f="reps" data-d="1" aria-label="Αύξηση κατά '+rStep+'">'+ICON_PLUS+'</button></div></div>'+
       '</div>'+
       (ex.b ? '<p class="hint">Το 0 σημαίνει μόνο το σωματικό βάρος.</p>' : '')+
+      '<div class="restset"><div class="rs-txt"><span>Ανάπαυση ανάμεσα στα σετ</span><small>Ξεκινά μόλις πατήσεις «Καταγραφή σετ»</small></div>'+
+        '<div class="rs-ctl"><button data-act="rest-adj" data-d="-15" aria-label="15 δευτερόλεπτα λιγότερη ανάπαυση">−15</button><b id="restSetVal">'+mmss(state.restDur)+'</b><button data-act="rest-adj" data-d="15" aria-label="15 δευτερόλεπτα περισσότερη ανάπαυση">+15</button></div></div>'+
       '<button class="primary" id="addSet" data-act="add-set">Καταγραφή σετ</button>'+
       '<p class="err" id="err" role="alert"></p>'+
     '</section>'+
@@ -743,6 +745,7 @@ function adjustRest(sec){
   state.restDur=Math.max(15,Math.min(600,state.restDur+sec)); persist();
   if(rest.end && !rest.done) rest.end=Math.max(Date.now()+1000, rest.end+sec*1000);
   saveRest(); renderRest();
+  var rv=$('#restSetVal'); if(rv) rv.textContent=mmss(state.restDur);
 }
 function mmss(sec){ sec=Math.max(0,Math.ceil(sec)); return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
 function renderRest(){
@@ -923,6 +926,7 @@ screen.addEventListener('click', function(e){
     case 'group': state.group=t.dataset.g; updateChips(); renderList(); break;
     case 'bump': bump(t.dataset.f, Number(t.dataset.d)); break;
     case 'add-set': onAddSet(); break;
+    case 'rest-adj': adjustRest(Number(t.dataset.d)); break;
     case 'del-set':
       id=state.currentEx; d=t.dataset.d; var i=Number(t.dataset.i);
       undoable(id,'Το σετ διαγράφηκε.',function(){

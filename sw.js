@@ -1,6 +1,6 @@
 // Κρατάει την εφαρμογή διαθέσιμη χωρίς internet.
 // Όταν αλλάζεις αρχεία της εφαρμογής, άλλαξε το VERSION για να πάρουν όλοι τη νέα έκδοση.
-const VERSION = 'pocketfold-v6';
+const VERSION = 'pocketfold-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -29,8 +29,8 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== self.location.origin) return;
-  // Η εφαρμογή γυμναστηρίου στο /gym/ έχει τον δικό της service worker.
-  if (url.pathname.startsWith('/gym/')) return;
+  // Οι εφαρμογές στο /gym/ και στο /coach/ έχουν τον δικό τους service worker.
+  if (url.pathname.startsWith('/gym/') || url.pathname.startsWith('/coach/')) return;
   event.respondWith(
     caches.open(VERSION).then(async (cache) => {
       const cached = await cache.match(req, {ignoreSearch: true}) ||

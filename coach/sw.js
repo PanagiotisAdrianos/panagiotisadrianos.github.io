@@ -1,6 +1,6 @@
 // Κρατάει την εφαρμογή διαθέσιμη χωρίς internet.
 // Όταν αλλάζεις αρχεία της εφαρμογής, άλλαξε το VERSION για να πάρουν όλοι τη νέα έκδοση.
-const VERSION = 'coach-v1';
+const VERSION = 'coach-v2';
 const ASSETS = [
   './',
   './index.html',

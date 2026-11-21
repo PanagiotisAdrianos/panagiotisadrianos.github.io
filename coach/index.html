@@ -155,12 +155,18 @@ function defaults(){return{v:1,updated:0,entries:[],payers:[],
   types:[
     {id:'t1',name:'Μόνος',price:25,unit:'session',color:COLORS[0]},
     {id:'t2',name:'Με 2ο προπονητή',price:20,unit:'session',color:COLORS[2]},
-    {id:'t3',name:'Αγώνας',price:25,unit:'session',color:COLORS[1]}],
+    {id:'t3',name:'Αγώνας (50 €)',price:50,unit:'session',color:COLORS[1]},
+    {id:'t4',name:'Αγώνας (70 €)',price:70,unit:'session',color:COLORS[7]}],
   pricesChecked:true}}
 function normalize(o){const d=defaults();o=o||{};
   let types=Array.isArray(o.types)&&o.types.length?o.types:d.types;
   let entries=Array.isArray(o.entries)?o.entries:[];
   types=types.map(t=>OLDCOL[t.color]?{...t,color:OLDCOL[t.color]}:t);
+  // αγώνες: 50 € ή 70 € την ημέρα
+  const t3=types.find(t=>t.id==='t3');
+  if(t3&&t3.name==='Αγώνας'&&+t3.price===25){types=types.map(t=>t.id==='t3'?{...t,name:'Αγώνας (50 €)',price:50,unit:'session'}:t);
+    entries=entries.map(e=>e.typeId==='t3'&&Math.abs((+e.amount||0)-25)<.01?{...e,amount:50}:e);
+    if(!types.find(t=>t.id==='t4'))types.push({id:'t4',name:'Αγώνας (70 €)',price:70,unit:'session',color:COLORS[7]})}
   // μετάβαση από τις παλιές ενδεικτικές τιμές
   const t1=types.find(t=>t.id==='t1');
   if(!o.pricesChecked&&t1&&t1.name==='Προπόνηση'&&+t1.price===15&&t1.unit==='hour'){
@@ -374,7 +380,7 @@ function importModal(){
   <p class="hint">Αν μια γραμμή έχει αριθμό μετά την ημερομηνία (π.χ. «7/11 25»), αυτό είναι το ποσό. Όσες υπάρχουν ήδη στην εφαρμογή δεν θα μπουν δεύτερη φορά.</p></form>`);
 }
 function typeForAmount(sel,amount){if(sel!=='_auto')return sel;
-  const t=S.types.find(t=>t.unit!=='hour'&&t.name!=='Αγώνας'&&Math.abs((+t.price||0)-amount)<.01)||S.types.find(t=>t.unit!=='hour'&&Math.abs((+t.price||0)-amount)<.01);
+  const t=S.types.find(t=>t.unit!=='hour'&&!t.name.startsWith('Αγώνας')&&Math.abs((+t.price||0)-amount)<.01)||S.types.find(t=>t.unit!=='hour'&&Math.abs((+t.price||0)-amount)<.01);
   return(t||S.types[0]).id}
 function isDup(x,typeId){return S.entries.some(e=>e.date===x.date&&e.typeId===typeId&&Math.abs((+e.amount||0)-x.amount)<.01)}
 function updateImportPreview(f){const p=document.getElementById('prev');if(!p)return;
